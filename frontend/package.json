@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "< Добавьте описание проекта в свободной форме >",
-  "author": "< Укажите здесь автора работы >",
+  "author": "lisantov",
   "type": "module",
   "scripts": {
     "dev": "vite",
