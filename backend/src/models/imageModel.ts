@@ -8,6 +8,6 @@ export interface Image {
 const imageSchema = new mongoose.Schema<Image>({
   fileName: String,
   originalName: String,
-});
+}, { _id: false });
 
 export default imageSchema;

@@ -4,7 +4,7 @@
   "description": "< Добавьте описание проекта в свободной форме >",
   "main": "dist/app.js",
   "scripts": {
-    "lint": "npx eslint src/**/*.ts",
+    "lint": "npx eslint src/**/*.ts --fix",
     "build": "tsc",
     "dev": "npx nodemon -L src/app.ts ",
     "start": "ts-node src/app.ts",
@@ -19,6 +19,7 @@
     "@types/validator": "^13.11.9",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
+    "celebrate": "^15.0.3",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",

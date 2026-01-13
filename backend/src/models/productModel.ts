@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Segments, celebrate } from 'celebrate';
 import ImageSchema, { Image } from './imageModel';
 
 export interface IProduct {
@@ -17,7 +18,10 @@ export const productSchema = new mongoose.Schema<IProduct>({
     minlength: 2,
     maxlength: 30,
   },
-  image: ImageSchema,
+  image: {
+    type: ImageSchema,
+    required: true,
+  },
   category: {
     type: String,
     required: true,
