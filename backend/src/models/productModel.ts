@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { Segments, celebrate } from 'celebrate';
 import ImageSchema, { Image } from './imageModel';
 
 export interface IProduct {

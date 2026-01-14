@@ -17,6 +17,24 @@ export const getProducts = (req: Request, res: Response) => Product.find({})
   }))
   .catch((err) => res.status(500).send(err));
 
+export const getProduct = (req: Request, res: Response) => Product.findById(req.params.id)
+  .then((product) => {
+    if (!product) {
+      res.status(404).send({ message: 'Нет товара по заданному id' });
+      return;
+    }
+
+    res.send({
+      title: product.title,
+      image: product.image,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+      _id: product._id,
+    });
+  })
+  .catch((err) => res.status(400).send(err));
+
 export const addProduct = (req: Request, res: Response) => Product.create(req.body)
   .then((product) => res.send({
     title: product.title,
@@ -49,7 +67,14 @@ export const updateProduct = (req: Request, res: Response) => {
         return;
       }
 
-      res.send(product);
+      res.send({
+        title: product.title,
+        image: product.image,
+        category: product.category,
+        description: product.description,
+        price: product.price,
+        _id: product._id,
+      });
     })
     .catch((err) => res.status(400).send(err));
 };
