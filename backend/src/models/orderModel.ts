@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Joi } from 'celebrate';
 
 export interface IOrder {
   payment: 'card' | 'online';
@@ -9,33 +10,11 @@ export interface IOrder {
   items: mongoose.Schema.Types.ObjectId[];
 }
 
-export const orderSchema = new mongoose.Schema({
-  payment: {
-    type: String,
-    enum: ['card', 'online'],
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  total: {
-    type: Number,
-    required: true,
-  },
-  items: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'product',
-    required: true,
-  }],
+export const orderSchema = Joi.object({
+  payment: Joi.string().required().valid('card', 'online'),
+  email: Joi.string().email().required(),
+  phone: Joi.string().pattern(/\d+/, 'numbers'),
+  address: Joi.string().required(),
+  total: Joi.number().required(),
+  items: Joi.array().items(Joi.string().required()).required(),
 });
-
-export default mongoose.model<IOrder>('order', orderSchema);
