@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   addProduct, deleteProduct, getProducts, updateProduct, getProduct,
 } from '../controllers/productController';
+import auth from '../middlewares/auth';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.post('/', addProduct);
 
 // Роуты конкретного продукта
 router.get('/:id', getProduct);
-router.delete('/:id', deleteProduct);
-router.patch('/:id', updateProduct);
+router.delete('/:id', auth, deleteProduct);
+router.patch('/:id', auth, updateProduct);
 
 export default router;

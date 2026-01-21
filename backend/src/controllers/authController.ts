@@ -18,6 +18,12 @@ export const loginDataValidator = celebrate({
   [Segments.BODY]: userLoginValidationScheme,
 });
 
+export const userValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(401).send({ message: 'Неправильные почта или пароль' });
+  return next(user);
+};
+
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
@@ -53,12 +59,6 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const userValidator = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(401).send({ message: 'Неправильные почта или пароль' });
-  return next(user);
-};
-
 export const loginUser = async (
   user: IUser & { _id: string },
   req: Request,
@@ -89,6 +89,39 @@ export const loginUser = async (
       },
       accessToken,
       refreshToken,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const logoutUser = async (req: Request, res: Response) => {
+  res.send({ success: true });
+};
+
+export const refreshToken = async (
+  _id: string,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = await User.findOne({ _id });
+    if (!user) return res.status(404).send({ message: 'Пользователь не существует' });
+
+    const token = jwt.sign(
+      { _id: user._id },
+      accessTokenSecret as jwt.Secret,
+      { expiresIn: accessTokenExpiry } as jwt.SignOptions,
+    );
+    return res.send({
+      success: true,
+      user: {
+        name: user.name,
+        email: user.email,
+        id: user._id,
+      },
+      accessToken: token,
     });
   } catch (err) {
     return next(err);
