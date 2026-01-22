@@ -7,6 +7,9 @@ import { errors, isCelebrateError } from 'celebrate';
 import productRouter from './routes/productRouter';
 import orderRouter from './routes/orderRouter';
 import authRouter from './routes/authRouter';
+import ConflictError from './errors/conflict-error';
+import BadRequestError from './errors/bad-request-error';
+import BasicError from "./errors/error-model";
 
 const port = process.env.PORT || 3000;
 const address = process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek';
@@ -15,11 +18,6 @@ const app = express();
 mongoose.connect(address);
 
 app.use(cors());
-/*
-app.use(cors({
-  origin: 'http://localhost:5173',
-}));
-*/
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -31,10 +29,12 @@ app.use('/auth', authRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (isCelebrateError(err)) return next(err);
+
   console.error(err.stack);
-  if (err.name === 'CastError') return res.status(400).send({ message: `Ошибка при преобразовании ${err.value} к ${err.kind}` });
-  if (err.code === 11000) return res.status(409).send({ message: err.errorResponse.errmsg });
-  return res.status(500).send(err);
+
+  if (!(err instanceof BasicError)) return res.status(500).send({ message: 'Непредусмотренная ошибка' });
+
+  return res.status(err.statusCode).send({ message: err.message });
 });
 
 app.use(errors());

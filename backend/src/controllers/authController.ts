@@ -3,6 +3,9 @@ import jwt from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
 import User, { userRegisterValidationScheme, userLoginValidationScheme, IUser } from '../models/userModel';
+import NotFoundError from '../errors/not-found-error';
+import UnauthorizedError from '../errors/unauthorized-error';
+import ConflictError from '../errors/conflict-error';
 
 const accessTokenExpiry = process.env.AUTH_ACCESS_TOKEN_EXPIRY || '1m';
 const refreshTokenExpiry = process.env.AUTH_REFRESH_TOKEN_EXPIRY || '7d';
@@ -20,7 +23,7 @@ export const loginDataValidator = celebrate({
 
 export const userValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(401).send({ message: 'Неправильные почта или пароль' });
+  if (!user) return next(new UnauthorizedError('Неправильные почта или пароль'));
   return next(user);
 };
 
@@ -55,7 +58,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       refreshToken,
     });
   } catch (err) {
-    next(err);
+    if (err instanceof Error && err.message.includes('11000')) return next(new ConflictError(err.message));
+    return next(err);
   }
 };
 
@@ -67,7 +71,7 @@ export const loginUser = async (
 ) => {
   try {
     const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) return res.status(401).send({ message: 'Неправильные почта или пароль' });
+    if (!isMatch) return next(new UnauthorizedError('Неправильные почта или пароль'));
 
     const accessToken = jwt.sign(
       { _id: user._id },
@@ -107,7 +111,7 @@ export const refreshToken = async (
 ) => {
   try {
     const user = await User.findOne({ _id });
-    if (!user) return res.status(404).send({ message: 'Пользователь не существует' });
+    if (!user) return next(new NotFoundError('Пользователь не существует'));
 
     const token = jwt.sign(
       { _id: user._id },

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import extractToken from '../utilities/extractToken';
+import UnauthorizedError from '../errors/unauthorized-error';
 
 const accessSecret = process.env.AUTH_ACCESS_TOKEN_SECRET;
 
@@ -14,6 +15,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     return next();
   } catch (err) {
-    res.status(401).send({ message: 'Необходима авторизация' });
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
 };

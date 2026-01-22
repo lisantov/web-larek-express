@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Joi } from 'celebrate';
 import ImageSchema, { Image } from './imageModel';
 
 export interface IProduct {
@@ -8,6 +9,28 @@ export interface IProduct {
   description: string;
   price: number;
 }
+
+export const productCreateValidationSchema = Joi.object<IProduct>({
+  title: Joi.string().required().min(2).max(30),
+  image: Joi.object<Image>({
+    fileName: Joi.string().required(),
+    originalName: Joi.string().required(),
+  }).required(),
+  category: Joi.string().required(),
+  description: Joi.string(),
+  price: Joi.number().default(null),
+});
+
+export const productUpdateValidationSchema = Joi.object<IProduct>({
+  title: Joi.string().min(2).max(30),
+  image: Joi.object<Image>({
+    fileName: Joi.string(),
+    originalName: Joi.string(),
+  }),
+  category: Joi.string(),
+  description: Joi.string(),
+  price: Joi.number().default(null),
+});
 
 export const productSchema = new mongoose.Schema<IProduct>({
   title: {

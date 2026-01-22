@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import extractToken from '../utilities/extractToken';
+import UnauthorizedError from '../errors/unauthorized-error';
 
 const refreshSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
 
@@ -13,6 +14,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const verified = jwt.verify(token, refreshSecret as jwt.Secret);
     return next(verified);
   } catch (err) {
-    return res.status(401).send({ message: 'Не валидный токен' });
+    return next(new UnauthorizedError('Не валидный токен'));
   }
 };

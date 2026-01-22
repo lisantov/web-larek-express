@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { orderSchema } from '../models/orderModel';
 import Product from '../models/productModel';
 
-export const orderValidator = celebrate({
+export const validateCreateOrder = celebrate({
   [Segments.BODY]: orderSchema,
 });
 
