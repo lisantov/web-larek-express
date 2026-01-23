@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import extractToken from '../utilities/extractToken';
 import UnauthorizedError from '../errors/unauthorized-error';
-
-const accessSecret = process.env.AUTH_ACCESS_TOKEN_SECRET;
+import { accessTokenSecret } from '../config';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
@@ -11,7 +10,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const token = extractToken(authHeader);
-    jwt.verify(token, accessSecret as jwt.Secret);
+    jwt.verify(token, accessTokenSecret as jwt.Secret);
 
     return next();
   } catch (err) {

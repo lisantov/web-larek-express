@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import extractToken from '../utilities/extractToken';
 import UnauthorizedError from '../errors/unauthorized-error';
-
-const refreshSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
+import { refreshTokenSecret } from '../config';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
@@ -11,7 +10,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const token = extractToken(authHeader);
-    const verified = jwt.verify(token, refreshSecret as jwt.Secret);
+    const verified = jwt.verify(token, refreshTokenSecret as jwt.Secret);
     return next(verified);
   } catch (err) {
     return next(new UnauthorizedError('Не валидный токен'));

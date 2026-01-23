@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
-import {Joi} from "celebrate";
+import { Joi } from 'celebrate';
 
 export interface IUser {
   name: string;
   email: string;
   password: string;
+  tokens: string[];
 }
 
 export const userRegisterValidationScheme = Joi.object({
@@ -32,7 +33,12 @@ const userSchema = new mongoose.Schema<IUser>({
   password: {
     type: String,
     required: true,
+    select: false,
   },
+  tokens: [{
+    type: String,
+    select: false,
+  }],
 });
 
 export default mongoose.model<IUser>('user', userSchema);

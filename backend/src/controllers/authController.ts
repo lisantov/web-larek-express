@@ -2,16 +2,18 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
+import type { Document, Types } from 'mongoose';
 import User, { userRegisterValidationScheme, userLoginValidationScheme, IUser } from '../models/userModel';
 import NotFoundError from '../errors/not-found-error';
 import UnauthorizedError from '../errors/unauthorized-error';
 import ConflictError from '../errors/conflict-error';
-
-const accessTokenExpiry = process.env.AUTH_ACCESS_TOKEN_EXPIRY || '1m';
-const refreshTokenExpiry = process.env.AUTH_REFRESH_TOKEN_EXPIRY || '7d';
-
-const accessTokenSecret = process.env.AUTH_ACCESS_TOKEN_SECRET;
-const refreshTokenSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
+import {
+  accessTokenExpiry,
+  refreshTokenExpiry,
+  accessTokenSecret,
+  refreshTokenSecret,
+} from '../config';
+import extractToken from '../utilities/extractToken';
 
 export const registerDataValidator = celebrate({
   [Segments.BODY]: userRegisterValidationScheme,
@@ -47,6 +49,14 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       refreshTokenSecret as jwt.Secret,
       { expiresIn: refreshTokenExpiry } as jwt.SignOptions,
     );
+
+    user.tokens.push(refreshToken);
+    await user.save();
+
+    // res.cookie('refreshToken', refreshToken, {
+    //   httpOnly: true,
+    // });
+
     return res.status(201).send({
       success: true,
       user: {
@@ -55,7 +65,6 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         id: user._id,
       },
       accessToken,
-      refreshToken,
     });
   } catch (err) {
     if (err instanceof Error && err.message.includes('11000')) return next(new ConflictError(err.message));
@@ -64,7 +73,9 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const loginUser = async (
-  user: IUser & { _id: string },
+  user: Document<unknown, {}, IUser> & IUser & {
+    _id: Types.ObjectId
+  },
   req: Request,
   res: Response,
   next: NextFunction,
@@ -84,6 +95,9 @@ export const loginUser = async (
       { expiresIn: refreshTokenExpiry } as jwt.SignOptions,
     );
 
+    user.tokens.push(refreshToken);
+    await user.save();
+
     return res.send({
       success: true,
       user: {
@@ -99,7 +113,15 @@ export const loginUser = async (
   }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+  const _id = jwt.verify(
+    extractToken(req.get('Authorization')!),
+    accessTokenSecret as jwt.Secret,
+  );
+
+  const user = await User.findOne({ _id });
+  if (!user) return next(new NotFoundError('Пользователь не найден'));
+
   res.send({ success: true });
 };
 
