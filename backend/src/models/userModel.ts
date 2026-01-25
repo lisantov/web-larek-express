@@ -1,12 +1,22 @@
 import mongoose from 'mongoose';
 import { Joi } from 'celebrate';
 
+export interface IToken {
+  token: string;
+}
+
 export interface IUser {
   name: string;
   email: string;
   password: string;
-  tokens: string[];
+  tokens: IToken[];
 }
+
+const tokenScheme = new mongoose.Schema<IToken>({
+  token: {
+    type: String,
+  },
+}, { _id: false });
 
 export const userRegisterValidationScheme = Joi.object({
   name: Joi.string().required(),
@@ -24,6 +34,9 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true,
     unique: true,
+    minLength: 2,
+    maxLength: 30,
+    default: 'Ё-моё',
   },
   email: {
     type: String,
@@ -34,10 +47,10 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true,
     select: false,
+    minLength: 6,
   },
   tokens: [{
-    type: String,
-    select: false,
+    type: tokenScheme,
   }],
 });
 

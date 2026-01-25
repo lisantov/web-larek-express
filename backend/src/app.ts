@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import { errors, isCelebrateError } from 'celebrate';
 import winston from 'winston';
 import expressWinston from 'express-winston';
+import cookieParser from 'cookie-parser';
 import productRouter from './routes/productRouter';
 import orderRouter from './routes/orderRouter';
 import authRouter from './routes/authRouter';
@@ -34,6 +35,7 @@ const errorLogger = expressWinston.errorLogger({
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 

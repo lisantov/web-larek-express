@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
 import type { Document, Types } from 'mongoose';
+import ms, { StringValue } from 'ms';
 import User, { userRegisterValidationScheme, userLoginValidationScheme, IUser } from '../models/userModel';
 import NotFoundError from '../errors/not-found-error';
 import UnauthorizedError from '../errors/unauthorized-error';
@@ -24,7 +25,7 @@ export const loginDataValidator = celebrate({
 });
 
 export const userValidator = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email }).select('+password');
   if (!user) return next(new UnauthorizedError('Неправильные почта или пароль'));
   return next(user);
 };
@@ -50,12 +51,16 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       { expiresIn: refreshTokenExpiry } as jwt.SignOptions,
     );
 
-    user.tokens.push(refreshToken);
+    user.tokens.push({ token: refreshToken });
     await user.save();
 
-    // res.cookie('refreshToken', refreshToken, {
-    //   httpOnly: true,
-    // });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: ms(refreshTokenExpiry as StringValue),
+      path: '/',
+    });
 
     return res.status(201).send({
       success: true,
@@ -95,8 +100,16 @@ export const loginUser = async (
       { expiresIn: refreshTokenExpiry } as jwt.SignOptions,
     );
 
-    user.tokens.push(refreshToken);
+    user.tokens.push({ token: refreshToken });
     await user.save();
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: ms(refreshTokenExpiry as StringValue),
+      path: '/',
+    });
 
     return res.send({
       success: true,
@@ -106,7 +119,6 @@ export const loginUser = async (
         id: user._id,
       },
       accessToken,
-      refreshToken,
     });
   } catch (err) {
     return next(err);
@@ -119,10 +131,21 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
     accessTokenSecret as jwt.Secret,
   );
 
+  const refresh = req.cookies.refreshToken;
+  if (!refresh) return next(new UnauthorizedError('Необходима авторизация'));
+
   const user = await User.findOne({ _id });
   if (!user) return next(new NotFoundError('Пользователь не найден'));
 
-  res.send({ success: true });
+  if (!user.tokens.some((t) => t.token === refresh)) return next(new UnauthorizedError('Необходима авторизация'));
+
+  try {
+    user.tokens = user.tokens.filter((t) => t.token !== refresh);
+    await user.save();
+    res.send({ success: true });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 export const refreshToken = async (
