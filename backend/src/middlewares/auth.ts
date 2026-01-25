@@ -6,7 +6,7 @@ import { accessTokenSecret } from '../config';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).send({ message: 'Необходима авторизация' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return next(new UnauthorizedError('Необходима авторизация'));
 
   try {
     const token = extractToken(authHeader);

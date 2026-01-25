@@ -142,6 +142,14 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
   try {
     user.tokens = user.tokens.filter((t) => t.token !== refresh);
     await user.save();
+
+    res.cookie('refreshToken', refresh, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: ms('-1s'),
+      path: '/',
+    });
     res.send({ success: true });
   } catch (err) {
     return next(err);
@@ -171,6 +179,27 @@ export const refreshToken = async (
         id: user._id,
       },
       accessToken: token,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = extractToken(req.get('Authorization')!);
+    const _id = jwt.decode(token);
+
+    const user = await User.findOne({ _id });
+    if (!user) return next(new NotFoundError('Пользователь по заданному id отсутствует в базе'));
+
+    res.send({
+      success: true,
+      user: {
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      },
     });
   } catch (err) {
     return next(err);
