@@ -3,14 +3,20 @@ import { NextFunction, Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
 import { orderSchema } from '../models/orderModel';
 import Product from '../models/productModel';
+import { isValidObjectId, type ObjectId } from "mongoose";
+import BadRequestError from "../errors/bad-request-error";
 
 export const validateCreateOrder = celebrate({
   [Segments.BODY]: orderSchema,
 });
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { total, items } = req.body;
+  const areItemsObjectId = items.every((item: ObjectId) => isValidObjectId(item));
+
+  if (!areItemsObjectId) return next(new BadRequestError('Не все переданные id товаров валидны'));
+
   try {
-    const { total, items } = req.body;
     const products = await Product.find({ _id: { $in: items } });
 
     if (products.length < items.length) {

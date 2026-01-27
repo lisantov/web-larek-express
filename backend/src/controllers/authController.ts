@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
-import type { Document, Types } from 'mongoose';
+import { type Document, type ObjectId, Types, isValidObjectId } from 'mongoose';
 import ms, { StringValue } from 'ms';
 import User, { userRegisterValidationScheme, userLoginValidationScheme, IUser } from '../models/userModel';
 import NotFoundError from '../errors/not-found-error';
@@ -126,20 +126,20 @@ export const loginUser = async (
 };
 
 export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
-  const _id = jwt.verify(
-    extractToken(req.get('Authorization')!),
-    accessTokenSecret as jwt.Secret,
-  );
-
-  const refresh = req.cookies.refreshToken;
-  if (!refresh) return next(new UnauthorizedError('Необходима авторизация'));
-
-  const user = await User.findOne({ _id });
-  if (!user) return next(new NotFoundError('Пользователь не найден'));
-
-  if (!user.tokens.some((t) => t.token === refresh)) return next(new UnauthorizedError('Необходима авторизация'));
-
   try {
+    const _id = jwt.verify(
+      extractToken(req.get('Authorization')!),
+      accessTokenSecret as jwt.Secret,
+    );
+
+    const refresh = req.cookies.refreshToken;
+    if (!refresh) return next(new UnauthorizedError('Необходима авторизация'));
+
+    const user = await User.findOne({ _id });
+    if (!user) return next(new NotFoundError('Пользователь не найден'));
+
+    if (!user.tokens.some((t) => t.token === refresh)) return next(new UnauthorizedError('Необходима авторизация'));
+
     user.tokens = user.tokens.filter((t) => t.token !== refresh);
     await user.save();
 
@@ -157,12 +157,13 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
 };
 
 export const refreshToken = async (
-  _id: string,
+  _id: ObjectId,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
+    if (!isValidObjectId(_id)) return next(new UnauthorizedError('Необходима авторизация'));
     const user = await User.findOne({ _id });
     if (!user) return next(new NotFoundError('Пользователь не существует'));
 

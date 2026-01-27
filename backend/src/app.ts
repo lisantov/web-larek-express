@@ -14,6 +14,7 @@ import authRouter from './routes/authRouter';
 import fileRouter from './routes/fileRouter';
 import BasicError from './errors/error-model';
 import * as fs from 'fs/promises';
+import {tr} from "@faker-js/faker";
 
 const port = process.env.PORT || 3000;
 const address = process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek';
@@ -41,6 +42,11 @@ schedule('00 * * * *', async () => {
 });
 
 app.use(cors());
+
+// app.use(cors({
+//   credentials: true,
+//   origin: 'http://localhost:5173',
+// }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -51,13 +57,14 @@ app.use(requestLogger);
 
 app.use('/order', orderRouter);
 app.use('/product', productRouter);
-app.use('/auth', authRouter);
 app.use('/upload', fileRouter);
+app.use('/auth', authRouter);
 
 app.use(errorLogger);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (isCelebrateError(err)) return next(err);
+  console.log(err);
 
   if (!(err instanceof BasicError)) return res.status(500).send({ message: 'Непредусмотренная ошибка' });
 

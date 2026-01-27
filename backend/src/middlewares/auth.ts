@@ -6,7 +6,12 @@ import { accessTokenSecret } from '../config';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return next(new UnauthorizedError('Необходима авторизация'));
+
+  if (!authHeader
+    || !authHeader.startsWith('Bearer ')
+    || !authHeader.split(' ')[1] === undefined) {
+    return next(new UnauthorizedError('Необходима авторизация'));
+  }
 
   try {
     const token = extractToken(authHeader);
