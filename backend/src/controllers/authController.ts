@@ -125,13 +125,13 @@ export const loginUser = async (
   }
 };
 
-export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+export const logoutUser = async (
+  _id: ObjectId,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const _id = jwt.verify(
-      extractToken(req.get('Authorization')!),
-      accessTokenSecret as jwt.Secret,
-    );
-
     const refresh = req.cookies.refreshToken;
     if (!refresh) return next(new UnauthorizedError('Необходима авторизация'));
 

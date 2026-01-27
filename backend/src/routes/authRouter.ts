@@ -14,7 +14,7 @@ const router = Router();
 
 router.post('/register', registerDataValidator, registerUser);
 router.post('/login', loginDataValidator, userValidator, loginUser);
-router.get('/logout', auth, logoutUser);
+router.get('/logout', refreshValidator, logoutUser);
 router.get('/token', refreshValidator, refreshToken);
 router.get('/user', auth, getCurrentUser);
 
