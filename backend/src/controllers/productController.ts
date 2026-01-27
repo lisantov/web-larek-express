@@ -57,11 +57,19 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
     const filename = req.body.image.fileName.split('/')[1];
 
     if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
-    if (req.body.image.fileName.startsWith('/uploads')) {
-      await fs.rename(req.body.image.filename, path.join(__dirname, '..', '..', 'public', 'images', filename));
+    if (req.body.image.fileName.startsWith('/uploads') || req.body.image.fileName.startsWith('uploads')) {
+      await fs.rename(
+        path.join(__dirname, '..', '..', 'uploads', filename),
+        path.join(__dirname, '..', '..', 'public', 'images', filename),
+      );
     }
 
-    const product = await Product.create(req.body);
+    const product = await Product.create({
+      ...req.body,
+      image: {
+        fileName: `/images/${filename}`,
+      },
+    });
     return res.send({
       title: product.title,
       image: {
