@@ -150,7 +150,7 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
       maxAge: ms('-1s'),
       path: '/',
     });
-    res.send({ success: true });
+    return res.send({ success: true });
   } catch (err) {
     return next(err);
   }
@@ -185,7 +185,7 @@ export const refreshToken = async (
   }
 };
 
-export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = extractToken(req.get('Authorization')!);
     const _id = jwt.decode(token);
@@ -193,7 +193,7 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
     const user = await User.findOne({ _id });
     if (!user) return next(new NotFoundError('Пользователь по заданному id отсутствует в базе'));
 
-    res.send({
+    return res.send({
       success: true,
       user: {
         name: user.name,

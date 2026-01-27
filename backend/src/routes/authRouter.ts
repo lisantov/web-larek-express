@@ -5,7 +5,7 @@ import {
   registerDataValidator,
   registerUser,
   userValidator,
-  getProfile,
+  getCurrentUser,
 } from '../controllers/authController';
 import auth from '../middlewares/auth';
 import refreshValidator from '../middlewares/refreshValidator';
@@ -16,6 +16,6 @@ router.post('/register', registerDataValidator, registerUser);
 router.post('/login', loginDataValidator, userValidator, loginUser);
 router.get('/logout', auth, logoutUser);
 router.get('/token', refreshValidator, refreshToken);
-router.get('/user', auth, getProfile);
+router.get('/user', auth, getCurrentUser);
 
 export default router;

@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { celebrate, Segments } from 'celebrate';
+import * as fs from 'fs/promises';
+import path from 'path';
 import Product, { productCreateValidationSchema, productUpdateValidationSchema } from '../models/productModel';
 import ConflictError from '../errors/conflict-error';
-import NotFoundError from "../errors/not-found-error";
-import mongoose from "mongoose";
+import NotFoundError from '../errors/not-found-error';
+import BadRequestError from '../errors/bad-request-error';
 
 export const validateProductCreateBody = celebrate({
   [Segments.BODY]: productCreateValidationSchema,
@@ -36,7 +38,7 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new NotFoundError('Нет товара по заданному id'));
-    res.send({
+    return res.send({
       title: product.title,
       image: product.image,
       category: product.category,
@@ -45,16 +47,27 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
       _id: product._id,
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
 export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const file = await fs.stat(path.join(__dirname, '..', '..', req.body.image.fileName));
+    const filename = req.body.image.fileName.split('/')[1];
+
+    if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
+    if (req.body.image.fileName.startsWith('/uploads')) {
+      await fs.rename(req.body.image.filename, path.join(__dirname, '..', '..', 'public', 'images', filename));
+    }
+
     const product = await Product.create(req.body);
-    res.send({
+    return res.send({
       title: product.title,
-      image: product.image,
+      image: {
+        fileName: `/images/${filename}`,
+        originalName: req.body.image.originalName,
+      },
       category: product.category,
       description: product.description,
       price: product.price,
@@ -62,6 +75,7 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
     });
   } catch (err) {
     if (err instanceof Error && err.message.includes('11000')) return next(new ConflictError(err.message));
+    if (err instanceof Error && err.message.includes('ENOENT')) return next(new BadRequestError('Такого файла не существует'));
     return next(err);
   }
 };
@@ -70,7 +84,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return next(new NotFoundError('Нет товара по заданному id'));
-    res.send({
+    return res.send({
       _id: product._id,
       title: product.title,
       image: product.image,
@@ -79,7 +93,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
       price: product.price,
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 

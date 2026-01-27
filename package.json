@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",

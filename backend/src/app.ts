@@ -7,10 +7,13 @@ import { errors, isCelebrateError } from 'celebrate';
 import winston from 'winston';
 import expressWinston from 'express-winston';
 import cookieParser from 'cookie-parser';
+import { schedule } from 'node-cron';
 import productRouter from './routes/productRouter';
 import orderRouter from './routes/orderRouter';
 import authRouter from './routes/authRouter';
+import fileRouter from './routes/fileRouter';
 import BasicError from './errors/error-model';
+import * as fs from 'fs/promises';
 
 const port = process.env.PORT || 3000;
 const address = process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek';
@@ -32,6 +35,11 @@ const errorLogger = expressWinston.errorLogger({
   format: winston.format.json(),
 });
 
+schedule('00 * * * *', async () => {
+  await fs.rm(path.join(__dirname, '..', 'uploads'), { recursive: true, force: true });
+  await fs.mkdir(path.join(__dirname, '..', 'uploads'));
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -44,6 +52,7 @@ app.use(requestLogger);
 app.use('/order', orderRouter);
 app.use('/product', productRouter);
 app.use('/auth', authRouter);
+app.use('/upload', fileRouter);
 
 app.use(errorLogger);
 

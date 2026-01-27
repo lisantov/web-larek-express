@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   tokens: [{
     type: tokenScheme,
+    select: false,
   }],
 });
 

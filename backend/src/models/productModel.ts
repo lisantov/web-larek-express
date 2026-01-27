@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { Joi } from 'celebrate';
+import * as fs from 'fs/promises';
+import path from 'path';
 import ImageSchema, { Image } from './imageModel';
 
 export interface IProduct {
@@ -55,6 +57,10 @@ export const productSchema = new mongoose.Schema<IProduct>({
     type: Number,
     default: null,
   },
+});
+
+productSchema.post('deleteOne', async (product) => {
+  await fs.rm(path.join(__dirname, '..', '..', 'public', product.image.fileName));
 });
 
 export default mongoose.model<IProduct>('product', productSchema);
