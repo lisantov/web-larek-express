@@ -166,8 +166,6 @@ export const refreshToken = async (
   next: NextFunction,
 ) => {
   try {
-    console.log(_id );
-    console.log(isValidObjectId(_id));
     if (!isValidObjectId(_id)) return next(new UnauthorizedError('Необходима авторизация'));
     const user = await User.findOne({ _id });
     if (!user) return next(new NotFoundError('Пользователь не существует'));
