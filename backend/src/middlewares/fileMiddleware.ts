@@ -22,7 +22,7 @@ const fileMiddleware = multer({
     file: Express.Multer.File,
     cb: FileFilterCallback,
   ) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
+    const allowedTypes = /jpeg|jpg|png|gif|svg/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
 
     if (extname) return cb(null, true);
