@@ -41,12 +41,12 @@ schedule('00 * * * *', async () => {
   await fs.mkdir(path.join(__dirname, '..', 'uploads'));
 });
 
-// app.use(cors());
+app.use(cors());
 
-app.use(cors({
-  credentials: true,
-  origin: 'http://localhost:5173',
-}));
+// app.use(cors({
+//   credentials: true,
+//   origin: 'http://localhost:5173',
+// }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

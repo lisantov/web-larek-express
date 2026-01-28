@@ -109,9 +109,23 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!product) return next(new NotFoundError('Нет товара по заданному id'));
+
+    const file = await fs.stat(path.join(__dirname, '..', '..', req.body.image.fileName));
+    const filename = req.body.image.fileName.split('/')[1];
+
+    if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
+    if (req.body.image.fileName.startsWith('/uploads') || req.body.image.fileName.startsWith('uploads')) {
+      await fs.rename(
+        path.join(__dirname, '..', '..', 'uploads', filename),
+        path.join(__dirname, '..', '..', 'public', 'images', filename),
+      );
+    }
     return res.send({
       title: product.title,
-      image: product.image,
+      image: {
+        fileName: `/images/${filename}`,
+        originalName: req.body.image.originalName,
+      },
       category: product.category,
       description: product.description,
       price: product.price,

@@ -59,7 +59,7 @@ export const productSchema = new mongoose.Schema<IProduct>({
   },
 });
 
-productSchema.post('deleteOne', async (product) => {
+productSchema.post('findOneAndDelete', async (product) => {
   await fs.rm(path.join(__dirname, '..', '..', 'public', product.image.fileName));
 });
 
