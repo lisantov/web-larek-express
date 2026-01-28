@@ -1,10 +1,10 @@
 import { celebrate, Segments } from 'celebrate';
 import { NextFunction, Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
+import { isValidObjectId, type ObjectId } from 'mongoose';
 import { orderSchema } from '../models/orderModel';
 import Product from '../models/productModel';
-import { isValidObjectId, type ObjectId } from "mongoose";
-import BadRequestError from "../errors/bad-request-error";
+import BadRequestError from '../errors/bad-request-error';
 
 export const validateCreateOrder = celebrate({
   [Segments.BODY]: orderSchema,

@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
-import { type Document, type ObjectId, Types, isValidObjectId } from 'mongoose';
+import {
+  type Document, type ObjectId, Types, isValidObjectId,
+} from 'mongoose';
 import ms, { StringValue } from 'ms';
 import User, { userRegisterValidationScheme, userLoginValidationScheme, IUser } from '../models/userModel';
 import NotFoundError from '../errors/not-found-error';
@@ -85,6 +87,7 @@ export const loginUser = async (
   res: Response,
   next: NextFunction,
 ) => {
+  if (!user.password) return next(user);
   try {
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) return next(new UnauthorizedError('Неправильные почта или пароль'));
@@ -157,12 +160,14 @@ export const logoutUser = async (
 };
 
 export const refreshToken = async (
-  _id: ObjectId,
+  _id: JwtPayload,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
+    console.log(_id );
+    console.log(isValidObjectId(_id));
     if (!isValidObjectId(_id)) return next(new UnauthorizedError('Необходима авторизация'));
     const user = await User.findOne({ _id });
     if (!user) return next(new NotFoundError('Пользователь не существует'));

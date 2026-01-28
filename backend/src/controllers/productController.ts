@@ -6,6 +6,7 @@ import Product, { productCreateValidationSchema, productUpdateValidationSchema }
 import ConflictError from '../errors/conflict-error';
 import NotFoundError from '../errors/not-found-error';
 import BadRequestError from '../errors/bad-request-error';
+import { mainDirectoryName, tempDirectoryName } from '../config';
 
 export const validateProductCreateBody = celebrate({
   [Segments.BODY]: productCreateValidationSchema,
@@ -54,20 +55,21 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const file = await fs.stat(path.join(__dirname, '..', '..', req.body.image.fileName));
-    const filename = req.body.image.fileName.split('/')[1];
+    const split = req.body.image.fileName.split('/');
+    const filename = split[split.length - 1];
 
     if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
     if (req.body.image.fileName.startsWith('/uploads') || req.body.image.fileName.startsWith('uploads')) {
       await fs.rename(
-        path.join(__dirname, '..', '..', 'uploads', filename),
-        path.join(__dirname, '..', '..', 'public', 'images', filename),
+        path.join(__dirname, '..', '..', tempDirectoryName, filename),
+        path.join(__dirname, '..', '..', 'public', mainDirectoryName, filename),
       );
     }
 
     const product = await Product.create({
       ...req.body,
       image: {
-        fileName: `/images/${filename}`,
+        fileName: `/${mainDirectoryName}/${filename}`,
       },
     });
     return res.send({
@@ -109,22 +111,27 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!product) return next(new NotFoundError('Нет товара по заданному id'));
+    let filename = product.image.fileName;
+    let originalname = product.image.originalName;
+    if (req.body.image && req.body.image.originalName) originalname = req.body.image.originalName;
+    if (req.body.image && req.body.image.fileName) {
+      const file = await fs.stat(path.join(__dirname, '..', '..', req.body.image.fileName));
+      const split = filename.split('/');
+      filename = split[split.length - 1];
 
-    const file = await fs.stat(path.join(__dirname, '..', '..', req.body.image.fileName));
-    const filename = req.body.image.fileName.split('/')[1];
-
-    if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
-    if (req.body.image.fileName.startsWith('/uploads') || req.body.image.fileName.startsWith('uploads')) {
-      await fs.rename(
-        path.join(__dirname, '..', '..', 'uploads', filename),
-        path.join(__dirname, '..', '..', 'public', 'images', filename),
-      );
+      if (!file.isFile()) return next(new NotFoundError('Переданное изображение не найдено'));
+      if (req.body.image.fileName.startsWith('/uploads') || req.body.image.fileName.startsWith('uploads')) {
+        await fs.rename(
+          path.join(__dirname, '..', '..', tempDirectoryName, filename),
+          path.join(__dirname, '..', '..', 'public', mainDirectoryName, filename),
+        );
+      }
     }
     return res.send({
       title: product.title,
       image: {
-        fileName: `/images/${filename}`,
-        originalName: req.body.image.originalName,
+        fileName: `/${mainDirectoryName}/${filename}`,
+        originalName: originalname,
       },
       category: product.category,
       description: product.description,

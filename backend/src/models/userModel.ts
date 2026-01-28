@@ -19,7 +19,7 @@ const tokenScheme = new mongoose.Schema<IToken>({
 }, { _id: false });
 
 export const userRegisterValidationScheme = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().required().min(6).max(30),
   email: Joi.string().email().required(),
   password: Joi.string().required().min(6),
 });
