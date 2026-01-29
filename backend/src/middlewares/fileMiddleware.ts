@@ -4,10 +4,10 @@ import { Request, Express } from 'express';
 import { tempDirectoryName } from '../config';
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_, __, cb) => {
     cb(null, `${tempDirectoryName}/`);
   },
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
     cb(null, uniqueName);
   },
@@ -19,7 +19,7 @@ const fileMiddleware = multer({
     fileSize: 1024 * 1024 * 2,
   },
   fileFilter: (
-    req: Request,
+    _: Request,
     file: Express.Multer.File,
     cb: FileFilterCallback,
   ) => {

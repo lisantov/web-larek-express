@@ -16,7 +16,7 @@ export const validateProductUpdateBody = celebrate({
   [Segments.BODY]: productUpdateValidationSchema,
 });
 
-export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
+export const getProducts = async (_: Request, res: Response, next: NextFunction) => {
   try {
     const products = await Product.find({});
     res.send({

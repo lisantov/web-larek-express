@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="11234e7e-aafa-4061-8b2f-d85dc8968b9e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/controllers/notFoundController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/controllers/authController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/controllers/authController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/controllers/fileController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/controllers/fileController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/controllers/productController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/controllers/productController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/middlewares/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/middlewares/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/middlewares/fileMiddleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/middlewares/fileMiddleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/middlewares/refreshValidator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/middlewares/refreshValidator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/middlewares/validateObjId.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/middlewares/validateObjId.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/models/productModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/models/productModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/fileRouter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/fileRouter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="381StNOB3kaSEq9C2wbdXa9Kv7V" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;review&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/lisantov/Work/back/web-larek-express/backend/src/errors&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/lisantov/Work/back/web-larek-express/frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/src/errors" />
+      <recent name="$PROJECT_DIR$/backend/src/middlewares" />
+      <recent name="$PROJECT_DIR$/frontend" />
+      <recent name="$PROJECT_DIR$/backend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/public/images" />
+      <recent name="$PROJECT_DIR$/backend/src/models" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-WS-252.28238.10" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="11234e7e-aafa-4061-8b2f-d85dc8968b9e" name="Changes" comment="" />
+      <created>1767965798044</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1767965798044</updated>
+      <workItem from="1767965799129" duration="4970000" />
+      <workItem from="1768045087965" duration="3219000" />
+      <workItem from="1768210699349" duration="3002000" />
+      <workItem from="1768295706493" duration="6476000" />
+      <workItem from="1768402679725" duration="2735000" />
+      <workItem from="1768452972630" duration="2705000" />
+      <workItem from="1768469742685" duration="901000" />
+      <workItem from="1768473254903" duration="3589000" />
+      <workItem from="1768488476091" duration="5944000" />
+      <workItem from="1768542412360" duration="1771000" />
+      <workItem from="1768544561335" duration="279000" />
+      <workItem from="1768544845765" duration="1169000" />
+      <workItem from="1768546874704" duration="73000" />
+      <workItem from="1768562292665" duration="1529000" />
+      <workItem from="1768791183299" duration="3670000" />
+      <workItem from="1768799917396" duration="1190000" />
+      <workItem from="1768803618890" duration="1852000" />
+      <workItem from="1768805533754" duration="509000" />
+      <workItem from="1768807268429" duration="2848000" />
+      <workItem from="1768818358153" duration="605000" />
+      <workItem from="1768880743725" duration="2593000" />
+      <workItem from="1768886622317" duration="1163000" />
+      <workItem from="1768916687033" duration="19000" />
+      <workItem from="1768968309992" duration="882000" />
+      <workItem from="1768969682958" duration="2524000" />
+      <workItem from="1769011909289" duration="1021000" />
+      <workItem from="1769050245298" duration="4884000" />
+      <workItem from="1769055546124" duration="3809000" />
+      <workItem from="1769077614283" duration="3000" />
+      <workItem from="1769136775080" duration="691000" />
+      <workItem from="1769145024167" duration="4087000" />
+      <workItem from="1769160256626" duration="1105000" />
+      <workItem from="1769175689150" duration="198000" />
+      <workItem from="1769176238048" duration="4668000" />
+      <workItem from="1769238302678" duration="2674000" />
+      <workItem from="1769349079857" duration="8189000" />
+      <workItem from="1769473816451" duration="3834000" />
+      <workItem from="1769483223522" duration="2682000" />
+      <workItem from="1769496960616" duration="434000" />
+      <workItem from="1769504953071" duration="44000" />
+      <workItem from="1769511784319" duration="8312000" />
+      <workItem from="1769521861420" duration="875000" />
+      <workItem from="1769560161670" duration="4872000" />
+      <workItem from="1769570438214" duration="12000" />
+      <workItem from="1769570538335" duration="939000" />
+      <workItem from="1769577317015" duration="564000" />
+      <workItem from="1769615016105" duration="1803000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

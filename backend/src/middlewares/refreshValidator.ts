@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import UnauthorizedError from '../errors/unauthorized-error';
 import { refreshTokenSecret } from '../config';
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+export default async (req: Request, _: Response, next: NextFunction) => {
   const token = req.cookies.refreshToken;
   if (!token) return next(new UnauthorizedError('Необходима авторизация'));
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import BadRequestError from '../errors/bad-request-error';
 
-export const uploadFile = async (
+export default async (
   req: Request,
   res: Response,
   next: NextFunction,

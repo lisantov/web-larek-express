@@ -14,6 +14,7 @@ import orderRouter from './routes/orderRouter';
 import authRouter from './routes/authRouter';
 import fileRouter from './routes/fileRouter';
 import BasicError from './errors/error-model';
+import notFoundController from './controllers/notFoundController';
 
 const port = process.env.PORT || 3000;
 const address = process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek';
@@ -56,6 +57,7 @@ app.use('/auth', authRouter);
 app.use('/order', orderRouter);
 app.use('/product', productRouter);
 app.use('/upload', fileRouter);
+app.use(notFoundController);
 
 app.use(errorLogger);
 

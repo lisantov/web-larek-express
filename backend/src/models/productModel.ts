@@ -60,9 +60,7 @@ export const productSchema = new mongoose.Schema<IProduct>({
 });
 
 productSchema.post('findOneAndDelete', async (product) => {
-  console.log('START');
   await fs.rm(path.join(__dirname, '..', '..', 'public', product.image.fileName));
-  console.log('END');
 });
 
 export default mongoose.model<IProduct>('product', productSchema);

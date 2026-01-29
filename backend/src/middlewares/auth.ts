@@ -4,7 +4,7 @@ import extractToken from '../utilities/extractToken';
 import UnauthorizedError from '../errors/unauthorized-error';
 import { accessTokenSecret } from '../config';
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+export default async (req: Request, _: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
 
   if (!authHeader

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { celebrate, Segments } from 'celebrate';
 import bcrypt from 'bcryptjs';
 import {
@@ -26,7 +26,7 @@ export const loginDataValidator = celebrate({
   [Segments.BODY]: userLoginValidationScheme,
 });
 
-export const userValidator = async (req: Request, res: Response, next: NextFunction) => {
+export const userValidator = async (req: Request, _: Response, next: NextFunction) => {
   const user = await User.findOne({ email: req.body.email }).select('+password');
   if (!user) return next(new UnauthorizedError('Неправильные почта или пароль'));
   return next(user);
@@ -161,7 +161,7 @@ export const logoutUser = async (
 
 export const refreshToken = async (
   _id: JwtPayload,
-  req: Request,
+  _: Request,
   res: Response,
   next: NextFunction,
 ) => {
